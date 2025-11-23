@@ -1,0 +1,224 @@
+.stats-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header {
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.header h2 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    margin: 0;
+    color: #718096;
+    font-size: 1rem;
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(102, 126, 234, 0.2);
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.stats-content {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.best-sellers-section {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.best-sellers-section h3 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.best-sellers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.seller-item {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.seller-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.seller-item.top-1 {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.seller-item.top-2 {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.1) 0%, rgba(192, 192, 192, 0.05) 100%);
+    border-color: rgba(192, 192, 192, 0.3);
+}
+
+.seller-item.top-3 {
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.1) 0%, rgba(205, 127, 50, 0.05) 100%);
+    border-color: rgba(205, 127, 50, 0.3);
+}
+
+.rank {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+}
+
+.rank-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.medal {
+    font-size: 2rem;
+    margin-top: 0.5rem;
+}
+
+.seller-info {
+    flex: 1;
+}
+
+.seller-info h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 6px;
+    transition: width 0.6s ease;
+    animation: fillBar 1s ease-out;
+}
+
+@keyframes fillBar {
+    from {
+        width: 0;
+    }
+}
+
+.quantity {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #718096;
+    font-weight: 600;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.summary-card {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+}
+
+.card-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.card-content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-value {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    color: #718096;
+}

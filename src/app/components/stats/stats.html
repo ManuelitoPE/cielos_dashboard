@@ -1,0 +1,70 @@
+<div class="stats-container">
+    <div class="header">
+        <h2>Estadísticas de Ventas</h2>
+        <p class="subtitle">Productos más vendidos</p>
+    </div>
+
+    @if (loading()) {
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Cargando estadísticas...</p>
+        </div>
+    } @else {
+        <div class="stats-content">
+            <div class="best-sellers-section">
+                <h3>🏆 Top Productos</h3>
+                <div class="best-sellers-list">
+                    @for (seller of bestSellers(); track seller.product_id; let i = $index) {
+                        <div class="seller-item" [class.top-1]="i === 0"
+                            [class.top-2]="i === 1" [class.top-3]="i === 2">
+                            <div class="rank">
+                                <span class="rank-number">{{ i + 1 }}</span>
+                                @if (i === 0) { <span class="medal">🥇</span> }
+                                @if (i === 1) { <span class="medal">🥈</span> }
+                                @if (i === 2) { <span class="medal">🥉</span> }
+                            </div>
+                            <div class="seller-info">
+                                <h4>{{ seller.product_name }}</h4>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" [style.width.%]="getBarWidth(seller.total_sold)"></div>
+                                </div>
+                                <p class="quantity">{{ seller.total_sold }} unidades vendidas</p>
+                                <p class="revenue">Ingresos: ${{ seller.revenue | number:'1.2-2' }}</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="card-icon">📊</div>
+                    <div class="card-content">
+                        <h4>Total Productos</h4>
+                        <p class="card-value">{{ bestSellers().length }}</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon">🎯</div>
+                    <div class="card-content">
+                        <h4>Más Vendido</h4>
+                        <p class="card-value">{{ bestSellers()[0]?.product_name || 'N/A' }}</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-content">
+                        <h4>Ventas Totales</h4>
+                        <p class="card-value">{{ totalSales() }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (bestSellers().length === 0) {
+            <div class="empty-state">
+                <p>No hay datos de ventas disponibles</p>
+            </div>
+        }
+    }
+</div>

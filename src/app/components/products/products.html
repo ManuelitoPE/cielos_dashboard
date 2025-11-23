@@ -1,0 +1,158 @@
+<div class="products-container">
+    <div class="header">
+        <div class="title-section">
+            <h2>Gestión de Productos</h2>
+            <p class="subtitle">Administra tu catálogo de prendas</p>
+        </div>
+        <button class="btn-add" (click)="toggleAddForm()">
+            {{ showAddForm() ? 'Cancelar' : '+ Nuevo Producto' }}
+        </button>
+    </div>
+
+    @if (showAddForm()) {
+    <div class="add-product-form">
+        <h3>Agregar Nuevo Producto</h3>
+        <form (ngSubmit)="addProduct()">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" [(ngModel)]="newProduct.name" name="name" required
+                        placeholder="Ej: Camiseta Básica">
+                </div>
+                <div class="form-group">
+                    <label>Precio *</label>
+                    <input type="number" [(ngModel)]="newProduct.price" name="price" required min="0" step="0.01">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea [(ngModel)]="newProduct.description" name="description" rows="2"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>URL Imagen</label>
+                    <input type="text" [(ngModel)]="newProduct.imageUrl" name="imageUrl" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Stock Inicial (por variante)</label>
+                    <input type="number" [(ngModel)]="newProduct.initialStock" name="initialStock" min="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Tallas (separadas por coma)</label>
+                    <input type="text" [(ngModel)]="sizesInput" name="sizes" placeholder="S, M, L, XL">
+                </div>
+                <div class="form-group">
+                    <label>Colores (separados por coma)</label>
+                    <input type="text" [(ngModel)]="colorsInput" name="colors" placeholder="Rojo, Azul, Negro">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Guardar Producto</button>
+        </form>
+    </div>
+    }
+    <div class="products-container">
+        <div class="header">
+            <div class="title-section">
+                <h2>Gestión de Productos</h2>
+                <p class="subtitle">Administra tu catálogo de prendas</p>
+            </div>
+            <button class="btn-add" (click)="toggleAddForm()">
+                {{ showAddForm() ? 'Cancelar' : '+ Nuevo Producto' }}
+            </button>
+        </div>
+
+        @if (showAddForm()) {
+        <div class="add-product-form">
+            <h3>Agregar Nuevo Producto</h3>
+            <form (ngSubmit)="addProduct()">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre *</label>
+                        <input type="text" [(ngModel)]="newProduct.name" name="name" required
+                            placeholder="Ej: Camiseta Básica">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio *</label>
+                        <input type="number" [(ngModel)]="newProduct.price" name="price" required min="0" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea [(ngModel)]="newProduct.description" name="description" rows="2"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>URL Imagen</label>
+                        <input type="text" [(ngModel)]="newProduct.imageUrl" name="imageUrl" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Inicial (por variante)</label>
+                        <input type="number" [(ngModel)]="newProduct.initialStock" name="initialStock" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tallas (separadas por coma)</label>
+                        <input type="text" [(ngModel)]="sizesInput" name="sizes" placeholder="S, M, L, XL">
+                    </div>
+                    <div class="form-group">
+                        <label>Colores (separados por coma)</label>
+                        <input type="text" [(ngModel)]="colorsInput" name="colors" placeholder="Rojo, Azul, Negro">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Guardar Producto</button>
+            </form>
+        </div>
+        }
+
+        @if (loading()) {
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Cargando productos...</p>
+        </div>
+        } @else {
+        <div class="products-grid">
+            @for (product of products(); track product.id) {
+            <div class="product-card">
+                <div class="product-image">
+                    <img [src]="product.images[0] || 'https://placehold.co/300x200?text=No+Image'" [alt]="product.name">
+                    <div class="stock-badge" [class.low-stock]="getTotalStock(product) < 50">
+                        {{ getTotalStock(product) }} unidades
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="description">{{ product.description }}</p>
+                    <div class="product-details">
+                        <div class="detail-item">
+                            <span class="label">Precio:</span>
+                            <span class="value price">${{ product.price.toFixed(2) }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Variantes:</span>
+                            <span class="value">{{ product.variants?.length || 0 }} ({{ getUniqueSizes(product) }} / {{
+                                getUniqueColors(product) }})</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+
+        @if (products().length === 0) {
+        <div class="empty-state">
+            <p>No hay productos disponibles</p>
+        </div>
+        }
+        }
+    </div>

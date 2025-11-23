@@ -1,0 +1,30 @@
+<div class="dashboard-container">
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h1>📊 Dashboard</h1>
+        </div>
+        <ul class="nav-menu">
+            <li>
+                <a routerLink="/products" routerLinkActive="active">
+                    <span class="icon">📦</span>
+                    <span>Productos</span>
+                </a>
+            </li>
+            <li>
+                <a routerLink="/inventory" routerLinkActive="active">
+                    <span class="icon">📋</span>
+                    <span>Inventario</span>
+                </a>
+            </li>
+            <li>
+                <a routerLink="/stats" routerLinkActive="active">
+                    <span class="icon">📈</span>
+                    <span>Estadísticas</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <main class="main-content">
+        <router-outlet></router-outlet>
+    </main>
+</div>
