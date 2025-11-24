@@ -24,6 +24,18 @@ export class ApiService {
         return this.http.post<Product>(`${this.baseUrl}/products`, data);
     }
 
+    getUploadUrl(filename: string, contentType: string): Observable<{ uploadUrl: string; publicUrl: string }> {
+        return this.http.get<{ uploadUrl: string; publicUrl: string }>(`${this.baseUrl}/products/upload-url`, {
+            params: { filename, contentType }
+        });
+    }
+
+    uploadToSignedUrl(url: string, file: File): Observable<any> {
+        return this.http.put(url, file, {
+            headers: { 'Content-Type': file.type }
+        });
+    }
+
     // Inventory endpoints
     createMovement(movement: { variant_id: number; movement_type: 'IN' | 'OUT'; quantity: number; reason: string; user_id: string }): Observable<InventoryMovement> {
         return this.http.post<InventoryMovement>(`${this.baseUrl}/inventory/movement`, movement);

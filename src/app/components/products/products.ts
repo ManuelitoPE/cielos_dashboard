@@ -58,6 +58,16 @@ export class ProductsComponent implements OnInit {
     this.showAddForm.update(v => !v);
   }
 
+  selectedFile: File | null = null;
+  isUploading = signal(false);
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+    }
+  }
+
   addProduct() {
     if (!this.newProduct.name || !this.newProduct.price) {
       alert('Por favor completa los campos obligatorios (Nombre y Precio)');
@@ -72,39 +82,69 @@ export class ProductsComponent implements OnInit {
       return;
     }
 
-    // Generate variants
-    const variants: Omit<ProductVariant, 'id' | 'product_id'>[] = [];
-    sizes.forEach(size => {
-      colors.forEach(color => {
-        variants.push({
-          size,
-          color,
-          sku: `${this.newProduct.name.substring(0, 3).toUpperCase()}-${size}-${color.substring(0, 3).toUpperCase()}`,
-          stock: this.newProduct.initialStock
+    this.isUploading.set(true);
+
+    const proceedWithCreation = (imageUrl: string) => {
+      // Generate variants
+      const variants: Omit<ProductVariant, 'id' | 'product_id'>[] = [];
+      sizes.forEach(size => {
+        colors.forEach(color => {
+          variants.push({
+            size,
+            color,
+            sku: `${this.newProduct.name.substring(0, 3).toUpperCase()}-${size}-${color.substring(0, 3).toUpperCase()}`,
+            stock: this.newProduct.initialStock
+          });
         });
       });
-    });
 
-    const productData = {
-      name: this.newProduct.name,
-      description: this.newProduct.description,
-      price: this.newProduct.price,
-      imageUrl: this.newProduct.imageUrl,
-      variants: variants
+      const productData = {
+        name: this.newProduct.name,
+        description: this.newProduct.description,
+        price: this.newProduct.price,
+        imageUrl: imageUrl,
+        variants: variants
+      };
+
+      this.apiService.addProduct(productData).subscribe({
+        next: (product) => {
+          this.products.update(products => [...products, product]);
+          this.showAddForm.set(false);
+          this.resetForm();
+          this.isUploading.set(false);
+          alert('Producto agregado exitosamente');
+        },
+        error: (error) => {
+          console.error('Error adding product:', error);
+          this.isUploading.set(false);
+          alert('Error al agregar el producto');
+        }
+      });
     };
 
-    this.apiService.addProduct(productData).subscribe({
-      next: (product) => {
-        this.products.update(products => [...products, product]);
-        this.showAddForm.set(false);
-        this.resetForm();
-        alert('Producto agregado exitosamente');
-      },
-      error: (error) => {
-        console.error('Error adding product:', error);
-        alert('Error al agregar el producto');
-      }
-    });
+    if (this.selectedFile) {
+      this.apiService.getUploadUrl(this.selectedFile.name, this.selectedFile.type).subscribe({
+        next: (response) => {
+          this.apiService.uploadToSignedUrl(response.uploadUrl, this.selectedFile!).subscribe({
+            next: () => {
+              proceedWithCreation(response.publicUrl);
+            },
+            error: (err) => {
+              console.error('Upload failed', err);
+              this.isUploading.set(false);
+              alert('Error subiendo la imagen');
+            }
+          });
+        },
+        error: (err) => {
+          console.error('Failed to get upload URL', err);
+          this.isUploading.set(false);
+          alert('Error iniciando la subida de imagen');
+        }
+      });
+    } else {
+      proceedWithCreation(this.newProduct.imageUrl || 'https://placehold.co/300x200?text=No+Image');
+    }
   }
 
   resetForm() {
@@ -117,6 +157,7 @@ export class ProductsComponent implements OnInit {
     };
     this.sizesInput = '';
     this.colorsInput = '';
+    this.selectedFile = null;
   }
 
   // Helpers for template
