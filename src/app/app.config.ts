@@ -1,7 +1,9 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-
+import { initializeApp } from "firebase/app";
+import { getAnalytics, isSupported } from "firebase/analytics";
+import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -11,3 +13,9 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient()
   ]
 };
+export const app = initializeApp(environment.firebase);
+
+// Initialize analytics only if supported (browser environment)
+let analytics;
+isSupported().then(yes => yes ? analytics = getAnalytics(app) : null);
+export { analytics };
