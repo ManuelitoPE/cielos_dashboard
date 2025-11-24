@@ -1,7 +1,7 @@
 {
   "hosting": {
     "target": "cielosdashboard",
-    "public": "public",
+    "public": "dist/dashboard/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
