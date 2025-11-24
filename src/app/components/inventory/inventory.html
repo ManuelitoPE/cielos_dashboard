@@ -17,7 +17,7 @@
                 @for (product of products(); track product.id) {
                 <div class="product-item" [class.selected]="selectedProduct()?.id === product.id"
                     (click)="selectProduct(product)">
-                    <img [src]="product.images[0] || 'https://placehold.co/50'" [alt]="product.name">
+                    <img [src]="product.images?.[0] || 'https://placehold.co/50'" [alt]="product.name">
                     <div class="product-item-info">
                         <h4>{{ product.name }}</h4>
                         <p class="stock">Total Stock: <strong>{{ getProductTotalStock(product) }}</strong></p>

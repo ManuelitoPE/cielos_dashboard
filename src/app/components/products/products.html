@@ -70,7 +70,7 @@
         @for (product of products(); track product.id) {
         <div class="product-card">
             <div class="product-image">
-                <img [src]="product.images[0] || 'https://placehold.co/300x200?text=No+Image'" [alt]="product.name">
+                <img [src]="product.images?.[0] || 'https://placehold.co/300x200?text=No+Image'" [alt]="product.name">
                 <div class="stock-badge" [class.low-stock]="getTotalStock(product) < 50">
                     {{ getTotalStock(product) }} unidades
                 </div>

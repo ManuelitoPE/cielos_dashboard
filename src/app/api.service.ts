@@ -7,7 +7,7 @@ import { Product, ProductVariant, InventoryMovement, BestSeller, Order, CreateOr
     providedIn: 'root'
 })
 export class ApiService {
-    private baseUrl = '/api';
+    private baseUrl = 'https://cielos-back.onrender.com';
 
     constructor(private http: HttpClient) { }
 
