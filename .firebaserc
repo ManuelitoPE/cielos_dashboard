@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "cielosweb"
-  }
+  },
+  "targets": {
+    "cielosweb": {
+      "hosting": {
+        "cielosdashboard": [
+          "cielosdashboard"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
