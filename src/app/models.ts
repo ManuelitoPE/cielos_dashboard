@@ -27,12 +27,13 @@ export interface ProductVariant {
 
 export interface InventoryMovement {
     id: number;
-    variant_id: number;
-    movement_type: 'IN' | 'OUT';
+    variantId: number;
+    type: 'IN' | 'OUT';
     quantity: number;
-    user_id: string;
+    userId: string;
     reason: string;
-    created_at: Date;
+    createdAt: Date;
+    invoiceId?: string;
     // Expanded info for display
     variant?: ProductVariant;
     productName?: string;

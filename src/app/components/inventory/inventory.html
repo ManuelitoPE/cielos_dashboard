@@ -110,31 +110,145 @@
                 <p>Selecciona una variante para ver su historial</p>
             </div>
             } @else if (transactions().length === 0) {
-            <div class="placeholder">
-                <p>No hay movimientos registrados para esta variante</p>
-            </div>
-            } @else {
-            <div class="transactions-list">
-                @for (transaction of transactions(); track transaction.id) {
-                <div class="transaction-item" [class.in]="transaction.movement_type === 'IN'"
-                    [class.out]="transaction.movement_type === 'OUT'">
-                    <div class="transaction-type">
-                        <span class="badge" [class.in]="transaction.movement_type === 'IN'"
-                            [class.out]="transaction.movement_type === 'OUT'">
-                            {{ transaction.movement_type === 'IN' ? 'Entrada' : 'Salida' }}
-                        </span>
+            <div class="inventory-container">
+                <div class="header">
+                    <h2>Gestión de Inventario</h2>
+                    <p class="subtitle">Control de entradas y salidas (Kardex)</p>
+                </div>
+
+                <div class="content-grid">
+                    <!-- Product Selection -->
+                    <div class="section product-selection">
+                        <h3>1. Seleccionar Producto</h3>
+                        @if (loading()) {
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                        } @else {
+                        <div class="product-list">
+                            @for (product of products(); track product.id) {
+                            <div class="product-item" [class.selected]="selectedProduct()?.id === product.id"
+                                (click)="selectProduct(product)">
+                                <img [src]="product.images?.[0] || 'https://placehold.co/50'" [alt]="product.name">
+                                <div class="product-item-info">
+                                    <h4>{{ product.name }}</h4>
+                                    <p class="stock">Total Stock: <strong>{{ getProductTotalStock(product) }}</strong>
+                                    </p>
+                                </div>
+                            </div>
+                            }
+                        </div>
+                        }
                     </div>
-                    <div class="transaction-details">
-                        <p class="quantity">{{ transaction.movement_type === 'IN' ? '+' : '-' }}{{ transaction.quantity
-                            }}
-                            unidades</p>
-                        <p class="reason">{{ transaction.reason }}</p>
-                        <p class="date">{{ transaction.created_at | date:'short' }}</p>
+
+                    <!-- Variant Selection -->
+                    <div class="section variant-selection">
+                        <h3>2. Seleccionar Variante</h3>
+                        @if (!selectedProduct()) {
+                        <div class="placeholder">
+                            <p>Primero selecciona un producto</p>
+                        </div>
+                        } @else {
+                        <div class="variant-list">
+                            @for (variant of selectedProduct()?.variants; track variant.id) {
+                            <div class="variant-item" [class.selected]="selectedVariant()?.id === variant.id"
+                                (click)="selectVariant(variant)">
+                                <div class="variant-info">
+                                    <span class="sku">{{ variant.sku }}</span>
+                                    <span class="attributes">{{ variant.size }} - {{ variant.color }}</span>
+                                </div>
+                                <div class="variant-stock" [class.low-stock]="variant.stock < 10">
+                                    {{ variant.stock }}
+                                </div>
+                            </div>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Transaction Form -->
+                    <div class="section transaction-form">
+                        <h3>3. Registrar Movimiento</h3>
+                        @if (!selectedVariant()) {
+                        <div class="placeholder">
+                            <p>Selecciona una variante para registrar movimientos</p>
+                        </div>
+                        } @else {
+                        <form (ngSubmit)="submitTransaction()">
+                            <div class="form-group">
+                                <label>Variante Seleccionada</label>
+                                <div class="selected-product-info">
+                                    <strong>{{ selectedProduct()?.name }}</strong>
+                                    <span>{{ selectedVariant()?.size }} / {{ selectedVariant()?.color }}</span>
+                                    <span class="current-stock">Stock actual: {{ selectedVariant()?.stock }}</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tipo de Movimiento</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="type" value="IN" [(ngModel)]="transactionType">
+                                        <span class="radio-custom in">Entrada (+)</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="type" value="OUT" [(ngModel)]="transactionType">
+                                        <span class="radio-custom out">Salida (-)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quantity">Cantidad</label>
+                                <input type="number" id="quantity" [(ngModel)]="quantity" name="quantity" min="1"
+                                    placeholder="Ingresa la cantidad" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="reason">Motivo</label>
+                                <textarea id="reason" [(ngModel)]="reason" name="reason" rows="3"
+                                    placeholder="Describe el motivo del movimiento"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit">Registrar Movimiento</button>
+                        </form>
+                        }
+                    </div>
+
+                    <!-- Transaction History (Kardex) -->
+                    <div class="section transaction-history">
+                        <h3>Historial de Movimientos (Kardex)</h3>
+                        @if (!selectedVariant()) {
+                        <div class="placeholder">
+                            <p>Selecciona una variante para ver su historial</p>
+                        </div>
+                        } @else if (transactions().length === 0) {
+                        <div class="placeholder">
+                            <p>No hay movimientos registrados para esta variante</p>
+                        </div>
+                        } @else {
+                        <div class="transactions-list">
+                            @for (transaction of transactions(); track transaction.id) {
+                            <div class="transaction-item" [class.in]="transaction.type === 'IN'"
+                                [class.out]="transaction.type === 'OUT'">
+                                <div class="transaction-type">
+                                    <span class="badge" [class.in]="transaction.type === 'IN'"
+                                        [class.out]="transaction.type === 'OUT'">
+                                        {{ transaction.type === 'IN' ? 'Entrada' : 'Salida' }}
+                                    </span>
+                                </div>
+                                <div class="transaction-details">
+                                    <p class="quantity">{{ transaction.type === 'IN' ? '+' : '-' }}{{
+                                        transaction.quantity
+                                        }}
+                                        unidades</p>
+                                    <p class="reason">{{ transaction.reason }}</p>
+                                    <p class="date">{{ transaction.createdAt | date:'short' }}</p>
+                                </div>
+                            </div>
+                            }
+                        </div>
+                        }
                     </div>
                 </div>
-                }
             </div>
-            }
-        </div>
-    </div>
-</div>

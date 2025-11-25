@@ -67,21 +67,47 @@ export class InventoryComponent implements OnInit {
 
   submitTransaction() {
     const variant = this.selectedVariant();
-    if (!variant || this.quantity <= 0) {
+    const product = this.selectedProduct();
+
+    if (!variant || !product || this.quantity <= 0) {
       alert('Por favor selecciona una variante y una cantidad válida');
       return;
     }
 
-    this.apiService.createMovement({
+    // Backend expects snake_case for DTO
+    const payload = {
       variant_id: variant.id,
       movement_type: this.transactionType,
       quantity: this.quantity,
       reason: this.reason || 'Sin motivo especificado',
-      user_id: '1' // Hardcoded for now, should come from auth service
-    }).subscribe({
+      user_id: '1' // Hardcoded for now
+    };
+
+    this.apiService.createMovement(payload).subscribe({
       next: () => {
         // Reload products to update stock
-        this.loadProducts();
+        this.loading.set(true);
+        this.apiService.getProducts().subscribe({
+          next: (products) => {
+            this.products.set(products);
+            this.loading.set(false);
+
+            // CRITICAL: Update references to the new objects from the fresh list
+            const updatedProduct = products.find(p => p.id === product.id);
+            if (updatedProduct) {
+              this.selectedProduct.set(updatedProduct);
+              const updatedVariant = updatedProduct.variants?.find(v => v.id === variant.id);
+              if (updatedVariant) {
+                this.selectedVariant.set(updatedVariant);
+              }
+            }
+          },
+          error: (err) => {
+            console.error('Error reloading products', err);
+            this.loading.set(false);
+          }
+        });
+
         // Reload transactions
         this.loadTransactions(variant.id);
 
@@ -92,7 +118,7 @@ export class InventoryComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error creating movement:', error);
-        alert('Error al registrar el movimiento');
+        alert('Error al registrar el movimiento: ' + (error.error?.message || error.message));
       }
     });
   }
