@@ -17,7 +17,7 @@
                 @for (product of products(); track product.id) {
                 <div class="product-item" [class.selected]="selectedProduct()?.id === product.id"
                     (click)="selectProduct(product)">
-                    <img [src]="product.images?.[0] || 'https://placehold.co/50'" [alt]="product.name">
+                    <img [src]="product.imageUrl || 'https://placehold.co/50'" [alt]="product.name">
                     <div class="product-item-info">
                         <h4>{{ product.name }}</h4>
                         <p class="stock">Total Stock: <strong>{{ getProductTotalStock(product) }}</strong></p>
@@ -96,7 +96,6 @@
                     <textarea id="reason" [(ngModel)]="reason" name="reason" rows="3"
                         placeholder="Describe el motivo del movimiento"></textarea>
                 </div>
-
                 <div class="inventory-container">
                     <div class="header">
                         <h2>Gestión de Inventario</h2>
@@ -116,7 +115,7 @@
                                 @for (product of products(); track product.id) {
                                 <div class="product-item" [class.selected]="selectedProduct()?.id === product.id"
                                     (click)="selectProduct(product)">
-                                    <img [src]="product.images?.[0] || 'https://placehold.co/50'" [alt]="product.name">
+                                    <img [src]="product.imageUrl || 'https://placehold.co/50'" [alt]="product.name">
                                     <div class="product-item-info">
                                         <h4>{{ product.name }}</h4>
                                         <p class="stock">Total Stock: <strong>{{ getProductTotalStock(product)
@@ -204,14 +203,12 @@
 
                         <!-- Transaction History (Kardex) -->
                         <div class="section transaction-history">
-                            <h3>Historial de Movimientos (Kardex)</h3>
-                            @if (!selectedVariant()) {
+                            <h3>Historial de Movimientos {{ selectedVariant() ? '(Variante Seleccionada)' : '(Global)'
+                                }}</h3>
+
+                            @if (transactions().length === 0) {
                             <div class="placeholder">
-                                <p>Selecciona una variante para ver su historial</p>
-                            </div>
-                            } @else if (transactions().length === 0) {
-                            <div class="placeholder">
-                                <p>No hay movimientos registrados para esta variante</p>
+                                <p>No hay movimientos registrados</p>
                             </div>
                             } @else {
                             <div class="transactions-list">
@@ -225,6 +222,10 @@
                                         </span>
                                     </div>
                                     <div class="transaction-details">
+                                        <p class="product-name" *ngIf="!selectedVariant()">
+                                            {{ transaction.variant?.product?.name }} - {{ transaction.variant?.size
+                                            }}/{{ transaction.variant?.color }}
+                                        </p>
                                         <p class="quantity">{{ transaction.type === 'IN' ? '+' : '-' }}{{
                                             transaction.quantity
                                             }}

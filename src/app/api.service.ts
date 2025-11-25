@@ -45,6 +45,10 @@ export class ApiService {
         return this.http.get<InventoryMovement[]>(`${this.baseUrl}/inventory/history/${variantId}`);
     }
 
+    getAllInventoryHistory(): Observable<InventoryMovement[]> {
+        return this.http.get<InventoryMovement[]>(`${this.baseUrl}/inventory/history`);
+    }
+
     // Order endpoints
     createOrder(order: CreateOrderDto): Observable<Order> {
         return this.http.post<Order>(`${this.baseUrl}/orders`, order);

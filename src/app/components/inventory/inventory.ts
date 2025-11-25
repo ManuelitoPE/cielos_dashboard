@@ -27,6 +27,7 @@ export class InventoryComponent implements OnInit {
 
   ngOnInit() {
     this.loadProducts();
+    this.loadGlobalHistory();
   }
 
   loadProducts() {
@@ -43,10 +44,24 @@ export class InventoryComponent implements OnInit {
     });
   }
 
+  loadGlobalHistory() {
+    this.apiService.getAllInventoryHistory().subscribe({
+      next: (transactions) => {
+        this.transactions.set(transactions);
+      },
+      error: (error) => {
+        console.error('Error loading global history:', error);
+      }
+    });
+  }
+
   selectProduct(product: Product) {
     this.selectedProduct.set(product);
     this.selectedVariant.set(null);
-    this.transactions.set([]);
+    // When deselecting variant, show global history or product history?
+    // For now, let's show global history again or clear it.
+    // User wants "all movements", so let's reload global history.
+    this.loadGlobalHistory();
   }
 
   selectVariant(variant: ProductVariant) {

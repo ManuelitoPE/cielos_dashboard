@@ -27,38 +27,15 @@ export interface ProductVariant {
 
 export interface InventoryMovement {
     id: number;
-    variantId: number;
-    type: 'IN' | 'OUT';
-    quantity: number;
-    userId: string;
-    reason: string;
-    createdAt: Date;
-    invoiceId?: string;
-    // Expanded info for display
-    variant?: ProductVariant;
-    productName?: string;
-}
-
-export interface OrderItem {
-    id: number;
     variant_id: number;
+    movement_type: 'IN' | 'OUT';
     quantity: number;
-    price: number;
-    variant?: ProductVariant;
-}
-
-export interface Order {
-    id: string;
-    customer_id: string;
-    status: 'PENDING' | 'PAID' | 'SHIPPED' | 'CANCELLED';
+    user_id: string;
+    reason: string;
     created_at: Date;
-    items: OrderItem[];
-    total?: number; // Helper for display
-}
-
-export interface CreateOrderDto {
-    customerId: string;
-    items: { variantId: number; quantity: number }[];
+    // Expanded info for display
+    variant?: ProductVariant & { product?: Product };
+    productName?: string;
 }
 
 export interface BestSeller {
