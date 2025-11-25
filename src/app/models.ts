@@ -44,3 +44,29 @@ export interface BestSeller {
     total_sold: number;
     revenue: number;
 }
+
+export interface OrderItem {
+    id: string;
+    product_variant_id: number;
+    quantity: number;
+    price: number;
+    product_name: string;
+    variant_sku: string;
+}
+
+export interface Order {
+    id: string;
+    user_id: string;
+    total_amount: number;
+    status: string;
+    items: OrderItem[];
+    created_at: Date;
+}
+
+export interface CreateOrderDto {
+    items: {
+        variant_id: number;
+        quantity: number;
+    }[];
+    user_id: string; // For now, passed from frontend or handled by backend auth
+}
